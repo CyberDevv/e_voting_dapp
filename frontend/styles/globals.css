@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+   .container_fluid {
+      @apply container mx-auto px-4;
+   }
+   
+   /* Rows */
+   .inline-start {
+      @apply inline-flex items-center justify-start;
+   }
+
+   .inline-center {
+      @apply inline-flex items-center justify-center;
+   }
+
+   .inline-start-center {
+      @apply inline-flex items-center justify-start;
+   }
+
+   .inline-end {
+      @apply inline-flex items-center justify-end;
+   }
+
+   .inline-between {
+      @apply inline-flex items-center justify-between;
+   }
+
+   .inline-evenly {
+      @apply inline-flex items-center justify-evenly;
+   }
+
+   .start {
+      @apply flex items-center justify-start;
+   }
+
+   .start-start {
+      @apply flex items-start justify-start;
+   }
+
+   .center-start {
+      @apply flex items-start justify-center;
+   }
+
+   .center {
+      @apply flex items-center justify-center;
+   }
+
+   .end {
+      @apply flex items-center justify-end;
+   }
+
+   .between {
+      @apply flex flex-row items-center justify-between;
+   }
+
+   .between-start {
+      @apply flex flex-row items-start justify-between;
+   }
+
+   .evenly {
+      @apply flex items-center justify-evenly;
+   }
+
+   .around {
+      @apply flex items-center justify-around;
+   }
+
+   /* Cols */
+   .col-start {
+      @apply flex flex-col items-start justify-center;
+   }
+
+   .col-start-start {
+      @apply flex flex-col items-start justify-start;
+   }
+
+   .col-center {
+      @apply flex flex-col items-center justify-center;
+   }
+
+   .inline-col-center {
+      @apply inline-flex flex-col items-center justify-center;
+   }
+
+   .col-end {
+      @apply flex flex-col items-end justify-center;
+   }
+
+   .col-between {
+      @apply flex flex-col items-start justify-between;
+   }
+}
