@@ -4,9 +4,18 @@
 
 @layer utilities {
    .container_fluid {
-      @apply container mx-auto px-4;
+      @apply container mx-auto px-8;
    }
-   
+
+   .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+
+   .hide-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+   }
+
    /* Rows */
    .inline-start {
       @apply inline-flex items-center justify-start;
