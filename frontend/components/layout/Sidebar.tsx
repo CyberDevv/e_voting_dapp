@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import { useRouter } from 'next/router';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 const Navbar = () => {
    return (
@@ -12,10 +13,18 @@ const Navbar = () => {
             Evotingdapp
          </span>
 
-         <ul className='mt-20 space-y-8'>
-            <Navlink label='Dashboard' icon={<DashboardTwoToneIcon />} />
-            <Navlink label='Vote' icon={<HowToVoteIcon />} />
-         </ul>
+         <div className= "col-between h-full pb-10">
+            <ul className='mt-20 space-y-8 w-full'>
+               <Navlink label='Dashboard' icon={<DashboardTwoToneIcon />} />
+               <Navlink label='Vote' icon={<HowToVoteIcon />} />
+            </ul>
+            <Button
+               startIcon={<LogoutOutlinedIcon />}
+               className={`mt-8 w-full px-6 py-3 text-base tracking-wider rounded-md normal-case px start text-gray-300 hover:text-red-500 hover:bg-red-100`}
+            >
+               Logout
+            </Button>
+         </div>
       </nav>
    );
 };
@@ -35,9 +44,10 @@ const Navlink = ({ label, icon }: NavlinkProps) => {
                startIcon={icon}
                className={`w-full px-6 py-3 text-base tracking-wider rounded-md normal-case px start ${
                   router.pathname === '/' + label.toLowerCase() ||
-                  (router.pathname === '/' && label === 'Dashboard')
+                  (router.pathname === '/' && label === 'Dashboard') ||
+                  router.pathname.includes('/' + label.toLowerCase())
                      ? 'bg-gray-700 text-gray-100'
-                     : 'bg-gray-800 text-gray-200'
+                     : 'bg-gray-800 text-gray-300'
                }`}
             >
                {label}

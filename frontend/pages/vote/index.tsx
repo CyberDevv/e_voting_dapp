@@ -1,6 +1,7 @@
 import Layout from '@/components/layout';
 import { Button, Divider, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import Link from 'next/link';
 
 export default function Home() {
    const colors = ['bg-primary', 'bg-secondary', 'bg-tetiary'];
@@ -11,7 +12,7 @@ export default function Home() {
    }
 
    return (
-      <Layout title='Home'>
+      <Layout title='Vote'>
          <section className='h-full pt-10'>
             <h4 className='text-3xl font-bold tracking-wide text-gray-200'>
                Your vote is secure, your vote counts
@@ -71,9 +72,11 @@ const CandidateComp = ({ name, mail }: CandidateCompProps) => {
                Vote
             </Button>
 
-            <Button className='px-4 py-2 ml-4 text-sm font-semibold text-gray-200 normal-case bg-gray-700 rounded-md'>
-               View
-            </Button>
+            <Link href='/vote/details'>
+               <Button className='px-4 py-2 ml-4 text-sm font-semibold text-gray-200 normal-case bg-gray-700 rounded-md'>
+                  View
+               </Button>
+            </Link>
          </div>
       </div>
    );
