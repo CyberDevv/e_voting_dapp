@@ -8,15 +8,16 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 const Navbar = () => {
    return (
-      <nav className='min-w-[272px] bg-gray-800 h-screen p-10'>
+      <nav className='min-w-[272px] bg-gray-800 h-screen p-10 fixed'>
          <span className='text-2xl font-semibold tracking-tight'>
             Evotingdapp
          </span>
 
-         <div className= "col-between h-full pb-10">
-            <ul className='mt-20 space-y-8 w-full'>
+         <div className='h-full pb-10 col-between'>
+            <ul className='w-full mt-20 space-y-8'>
                <Navlink label='Dashboard' icon={<DashboardTwoToneIcon />} />
                <Navlink label='Vote' icon={<HowToVoteIcon />} />
+               <Navlink label='Elections' icon={<HowToVoteIcon />} />
             </ul>
             <Button
                startIcon={<LogoutOutlinedIcon />}

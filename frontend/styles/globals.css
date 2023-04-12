@@ -102,3 +102,7 @@
       @apply flex flex-col items-start justify-between;
    }
 }
+
+input {
+  color-scheme: dark;
+}

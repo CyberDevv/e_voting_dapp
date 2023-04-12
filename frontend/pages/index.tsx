@@ -1,6 +1,4 @@
 import Layout from '@/components/layout';
-import SearchIcon from '@mui/icons-material/Search';
-import { Button, Divider, IconButton } from '@mui/material';
 
 export default function Home() {
    return (
@@ -39,63 +37,63 @@ const ActivityComp = () => {
          </h4>
 
          <div className='mt-5'>
-            <div className='start space-x-10'>
-               <p className='start space-x-2 text-sm text-gray-200'>
-                  <span className='h-3 w-3 block bg-primary rounded-full' />
+            <div className='space-x-10 start'>
+               <p className='space-x-2 text-sm text-gray-200 start'>
+                  <span className='block w-3 h-3 rounded-full bg-primary' />
                   <span>Ongoing</span>
                </p>
-               <p className='start space-x-2 text-sm text-gray-200'>
-                  <span className='h-3 w-3 block bg-secondary rounded-full' />
+               <p className='space-x-2 text-sm text-gray-200 start'>
+                  <span className='block w-3 h-3 rounded-full bg-secondary' />
                   <span>Pending</span>
                </p>
-               <p className='start space-x-2 text-sm text-gray-200'>
-                  <span className='h-3 w-3 block bg-tetiary rounded-full' />
+               <p className='space-x-2 text-sm text-gray-200 start'>
+                  <span className='block w-3 h-3 rounded-full bg-tetiary' />
                   <span>Concluded</span>
                </p>
             </div>
 
             <div className='mt-10 space-y-8'>
                <p className='grid grid-cols-2 gap-x-8'>
-                  <span className='between space-x-8'>
+                  <span className='space-x-8 between'>
                      <span className='text-lg text-gray-200 truncate'>
                         President
                      </span>
-                     <span className='h-3 w-3 block bg-primary rounded-full' />
+                     <span className='block w-3 h-3 rounded-full bg-primary' />
                   </span>
-                  <span className='text-base text-gray-200 text-right'>
+                  <span className='text-base text-right text-gray-200'>
                      27th April, 20023
                   </span>
                </p>
                <p className='grid grid-cols-2 gap-x-8'>
-                  <span className='between space-x-8'>
+                  <span className='space-x-8 between'>
                      <span className='text-lg text-gray-200 truncate'>
                         Secretary
                      </span>
-                     <span className='h-3 w-3 block bg-secondary rounded-full' />
+                     <span className='block w-3 h-3 rounded-full bg-secondary' />
                   </span>
-                  <span className='text-base text-gray-200 text-right'>
+                  <span className='text-base text-right text-gray-200'>
                      Pending
                   </span>
                </p>
                <p className='grid grid-cols-2 gap-x-8'>
-                  <span className='between space-x-8'>
+                  <span className='space-x-8 between'>
                      <span className='text-lg text-gray-200 truncate'>
                         Director of Sports
                      </span>
-                     <span className='h-3 w-3 block bg-secondary rounded-full' />
+                     <span className='block w-3 h-3 rounded-full bg-secondary' />
                   </span>
-                  <span className='text-base text-gray-200 text-right'>
+                  <span className='text-base text-right text-gray-200'>
                      Pending
                   </span>
                </p>
                <p className='grid grid-cols-2 gap-x-8'>
-                  <span className='between space-x-8'>
+                  <span className='space-x-8 between'>
                      <span className='text-lg text-gray-200 truncate'>
                         Vice Precident
                      </span>
-                     <span className='h-3 w-3 block bg-tetiary rounded-full' />
+                     <span className='block w-3 h-3 rounded-full bg-tetiary' />
                   </span>
-                  <span className='text-base text-gray-200 text-right'>
+                  <span className='text-base text-right text-gray-200'>
                      Concluded
                   </span>
                </p>

@@ -18,9 +18,9 @@ const Layout = ({ children, title }: LayoutProps) => {
          <main className='text-gray-100 bg-gray-900 start-start'>
             <Sidebar />
 
-            <div className='w-full p-10'>
+            <div className='w-full p-10 ml-[272px] min-h-screen'>
                <Navbar />
-               {children}
+               <section>{children}</section>
             </div>
          </main>
       </>
