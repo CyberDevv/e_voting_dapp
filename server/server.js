@@ -1,20 +1,30 @@
 import express from 'express';
 import { error404 } from './controllers/404.controller';
-import { errorHandlerMiddleware, requestLogger } from './middlewares';
+import {
+   errorHandlerMiddleware,
+   requestLogger,
+   verifyJwt,
+} from './middlewares';
 import connectDB from './utils/dbConnect';
 import logger from './utils/winston';
 require('dotenv').config();
+import authRoutes from './routes/auth.routes';
+import electionRoutes from './routes/election.routes';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// jwt setup
+app.use(verifyJwt);
+
 app.use(requestLogger);
 
 // routes
 app.use('/ping', (req, res) => res.json({ msg: 'pong' }));
-//
+app.use('/api/v1/', authRoutes);
+app.use('/api/v1/', electionRoutes);
 app.use(error404);
 
 // error handler
