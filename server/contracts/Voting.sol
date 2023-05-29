@@ -119,10 +119,7 @@ contract Voting {
     }
 
     // Function for voting
-    function vote(
-        uint _electionId,
-        uint _candidateId
-    ) public onlyVoteOnce {
+    function vote(uint _electionId, uint _candidateId) public onlyVoteOnce {
         Election storage election = elections[_electionId];
         require(
             block.timestamp >= election.startTime &&
@@ -159,5 +156,30 @@ contract Voting {
     ) public view returns (string memory, string memory, bool) {
         Voter storage voter = voters[_voterAddress];
         return (voter.name, voter.email, voter.hasVoted);
+    }
+
+    // function to get all elections
+    function getAllElections()
+        public
+        view
+        returns (
+            string[] memory titles,
+            uint[] memory startTimes,
+            uint[] memory endTimes,
+            uint[] memory numCandidatesArray
+        )
+    {
+        titles = new string[](numElections);
+        startTimes = new uint[](numElections);
+        endTimes = new uint[](numElections);
+        numCandidatesArray = new uint[](numElections);
+
+        for (uint i = 0; i < numElections; i++) {
+            Election storage election = elections[i];
+            titles[i] = election.title;
+            startTimes[i] = election.startTime;
+            endTimes[i] = election.endTime;
+            numCandidatesArray[i] = election.numCandidates;
+        }
     }
 }

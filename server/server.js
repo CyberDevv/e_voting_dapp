@@ -24,7 +24,7 @@ app.use(requestLogger);
 // routes
 app.use('/ping', (req, res) => res.json({ msg: 'pong' }));
 app.use('/api/v1/', authRoutes);
-app.use('/api/v1/', electionRoutes);
+app.use('/api/v1/elections', electionRoutes);
 app.use(error404);
 
 // error handler

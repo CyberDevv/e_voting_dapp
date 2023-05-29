@@ -1,8 +1,11 @@
 import express from 'express';
-import { CreateElection } from '../controllers/election.controller';
+import {
+   CreateElection,
+   GetElections,
+} from '../controllers/election.controller';
 
 const router = express.Router();
 
-router.post('/crete-election', CreateElection);
+router.route('/').get(GetElections).post(CreateElection);
 
 export default router;
