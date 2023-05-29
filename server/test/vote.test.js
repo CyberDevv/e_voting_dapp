@@ -124,4 +124,9 @@ const { developmentChains } = require('../helper-hardhat-config');
               'Election is not yet over'
            );
         });
+
+        it('should get election by id', async function () {
+             const election = await votingApp.getElectionById(0);
+             expect(election.title).to.equal('Election 1');
+        })
      });

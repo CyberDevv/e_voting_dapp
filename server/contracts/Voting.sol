@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 // Import statements for required libraries
 
@@ -16,7 +16,7 @@ contract Voting {
 
     struct Candidate {
         string name;
-        uint voteCount;
+        uint256 voteCount;
     }
 
     struct Election {
@@ -25,11 +25,14 @@ contract Voting {
         uint endTime;
         mapping(uint => Candidate) candidates;
         uint numCandidates;
+        string electionId;
+        bool exists;
     }
 
     // Mappings for voters, elections, and admin
     mapping(address => Voter) public voters;
-    mapping(uint => Election) public elections;
+    mapping(string => Election) public elections;
+    string[] public electionIdsArray;
     uint public numElections;
     address public admin;
 
@@ -42,7 +45,7 @@ contract Voting {
     event VoterRevoked(address indexed _voterAddress);
     event VoteCasted(
         address indexed _voterAddress,
-        uint indexed _electionId,
+        string indexed _electionId,
         uint indexed _candidateId
     );
 
@@ -84,23 +87,33 @@ contract Voting {
         string memory _title,
         uint _startTime,
         uint _endTime,
-        string[] memory _candidateNames
+        string[] memory _candidateNames,
+        string memory _electionId
     ) public onlyAdmin {
+        Election storage election = elections[_electionId];
+        require(!election.exists, "Election ID already exists");
+
         require(_startTime < _endTime, "Invalid election duration");
-        Election storage newElection = elections[numElections];
-        newElection.title = _title;
-        newElection.startTime = _startTime;
-        newElection.endTime = _endTime;
-        newElection.numCandidates = _candidateNames.length;
+
+        election.title = _title;
+        election.startTime = _startTime;
+        election.endTime = _endTime;
+        election.numCandidates = _candidateNames.length;
+        election.electionId = _electionId;
+        election.exists = true;
+
         for (uint i = 0; i < _candidateNames.length; i++) {
-            newElection.candidates[i] = Candidate(_candidateNames[i], 0);
+            election.candidates[i] = Candidate(_candidateNames[i], 0);
         }
+
+        electionIdsArray.push(_electionId);
+
         numElections++;
     }
 
     // Function for adding a candidate
     function addCandidate(
-        uint _electionId,
+        string memory _electionId,
         string memory _name
     ) public onlyAdmin {
         Election storage election = elections[_electionId];
@@ -119,7 +132,10 @@ contract Voting {
     }
 
     // Function for voting
-    function vote(uint _electionId, uint _candidateId) public onlyVoteOnce {
+    function vote(
+        string memory _electionId,
+        uint _candidateId
+    ) public onlyVoteOnce {
         Election storage election = elections[_electionId];
         require(
             block.timestamp >= election.startTime &&
@@ -136,7 +152,7 @@ contract Voting {
 
     // Function for getting election results
     function getElectionResults(
-        uint _electionId
+        string memory _electionId
     ) public view returns (string[] memory, uint[] memory) {
         Election storage election = elections[_electionId];
         // require(block.timestamp >= election.endTime, 'Election is not yet over');
@@ -166,20 +182,51 @@ contract Voting {
             string[] memory titles,
             uint[] memory startTimes,
             uint[] memory endTimes,
+            string[] memory electionIds,
             uint[] memory numCandidatesArray
         )
     {
         titles = new string[](numElections);
         startTimes = new uint[](numElections);
         endTimes = new uint[](numElections);
+        electionIds = new string[](numElections);
         numCandidatesArray = new uint[](numElections);
 
-        for (uint i = 0; i < numElections; i++) {
-            Election storage election = elections[i];
+        for (uint256 i = 0; i < numElections; i++) {
+            Election storage election = elections[electionIdsArray[i]];
             titles[i] = election.title;
             startTimes[i] = election.startTime;
             endTimes[i] = election.endTime;
+            electionIds[i] = election.electionId;
             numCandidatesArray[i] = election.numCandidates;
+        }
+    }
+
+    // function to get a single election
+    function getElection(
+        string memory _electionId
+    )
+        public
+        view
+        returns (
+            string memory title,
+            uint256 startTime,
+            uint256 endTime,
+            uint256 numCandidates,
+            Candidate[] memory candidates
+        )
+    {
+        Election storage election = elections[_electionId];
+        require(election.exists, "Election does not exist");
+
+        title = election.title;
+        startTime = election.startTime;
+        endTime = election.endTime;
+        numCandidates = election.numCandidates;
+        candidates = new Candidate[](numCandidates);
+
+        for (uint256 i = 0; i < numCandidates; i++) {
+            candidates[i] = election.candidates[i];
         }
     }
 }
