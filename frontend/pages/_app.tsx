@@ -6,6 +6,8 @@ import {
    StyledEngineProvider,
    ThemeProvider,
 } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const roboto = Roboto({
    weight: ['400', '500', '700'],
@@ -46,6 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
          <StyledEngineProvider injectFirst>
             <main className={`${roboto.className}`}>
                <Component {...pageProps} />
+               <ToastContainer />
             </main>
          </StyledEngineProvider>
       </ThemeProvider>

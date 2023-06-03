@@ -1,30 +1,43 @@
-import axios from 'axios';
+import User from '@/models/user';
+import dbConnect from '@/utils/dbConnect';
+import bcrypt from 'bcrypt';
+import { StatusCodes } from 'http-status-codes';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
-   name: string;
+   msg?: string;
+   error?: any;
 };
 
-export default function handler(
+export default async function handler(
    req: NextApiRequest,
    res: NextApiResponse<Data>
 ) {
    const { name, email, password } = req.body;
 
-   axios
-      .post('http://localhost:8000/api/auth/register', {
+   await dbConnect();
+
+   try {
+      // check if email already exists
+      const user = await User.findOne({ email });
+
+      if (user) {
+         res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'User already exists',
+         });
+         return;
+      }
+
+      await User.create({
          name,
          email,
-         password,
-      })
-      .then(
-         (response) => {
-            console.log(response);
-            res.status(200).json({ name: 'John Doe' });
-         },
-         (error) => {
-            console.log(error);
-            res.status(error.response.status).json(error.response.data);
-         }
-      );
+         hashPassword: bcrypt.hashSync(password, 14),
+      });
+
+      res.status(StatusCodes.CREATED).json({
+         msg: 'User created successfully',
+      });
+   } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error });
+   }
 }

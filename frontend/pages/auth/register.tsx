@@ -1,12 +1,52 @@
 import Auth from '@/components/layout/Auth';
-import { Button, TextField } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { TextField } from '@mui/material';
+import axios from 'axios';
+import Router from 'next/router';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const Register = () => {
    const [name, setName] = React.useState<string>('');
    const [email, setEmail] = React.useState<string>('');
    const [password, setPassword] = React.useState<string>('');
    const [confirmPassword, setConfirmPassword] = React.useState<string>('');
+   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+   const handleSubmit = (event: React.FormEvent) => {
+      event?.preventDefault();
+
+      setIsLoading(true);
+
+      // validate inputs
+      if (!name || !email || !password || !confirmPassword) {
+         return toast.error('Fill all empty inputs');
+      }
+
+      // check if password matches
+      if (password !== confirmPassword) {
+         return toast.error('Password do not match!');
+      }
+
+      axios
+         .post('/api/auth/register', { name, email, password })
+         .then((res) => {
+            toast.success(res?.data?.msg);
+
+            Router.push('/auth/login');
+
+            setName('');
+            setEmail('');
+            setPassword('');
+            setConfirmPassword('');
+            setIsLoading(false);
+         })
+         .catch((err) => {
+            console.log('Error ==>', err?.response?.data);
+            toast.error(err?.response?.data?.error);
+            setIsLoading(false);
+         });
+   };
 
    return (
       <Auth
@@ -14,6 +54,7 @@ const Register = () => {
          title='Sign Up'
          desc='Create an account to vote your favorite candidate'
          heading='Welcome'
+         handleSubmit={handleSubmit}
       >
          <Input placeholder='Name' value={name} setValue={setName} />
          <Input
@@ -34,13 +75,14 @@ const Register = () => {
             value={confirmPassword}
             setValue={setConfirmPassword}
          />
-
-         <Button
+         <LoadingButton
+            loading={isLoading}
             className='w-full text-sm normal-case md:text-base lg:text-lg bg-primary'
             variant='contained'
+            type='submit'
          >
             Sign up
-         </Button>
+         </LoadingButton>
       </Auth>
    );
 };
