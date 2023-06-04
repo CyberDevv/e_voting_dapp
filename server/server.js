@@ -5,7 +5,7 @@ import {
    requestLogger,
    verifyJwt,
 } from './middlewares';
-import connectDB from './utils/dbConnect';
+import connectDB from '../frontend/utils/dbConnect';
 import logger from './utils/winston';
 require('dotenv').config();
 import authRoutes from './routes/auth.routes';

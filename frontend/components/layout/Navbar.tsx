@@ -1,10 +1,10 @@
-import { Button, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ethers } from 'ethers';
+import { Button, IconButton } from '@mui/material';
 import axios from 'axios';
+import { ethers } from 'ethers';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
 declare global {
    interface Window {
@@ -14,6 +14,14 @@ declare global {
 
 const Navbar = () => {
    const [loginState, setLoginState] = React.useState<string>('');
+   const [userId, setUserId] = React.useState<string>('');
+
+   React.useEffect(() => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+         setUserId(userId);
+      }
+   }, []);
 
    const handleLogin = async () => {
       setLoginState('Coneecting to your wallet...');
@@ -29,15 +37,26 @@ const Navbar = () => {
       const signer = provider.getSigner();
       const walletAddress = await signer.getAddress();
 
-      console.log(walletAddress);
+      setLoginState('Generating nonce...');
+      const {
+         data: { data },
+      } = await axios.post('/api/auth/nonce', {
+         walletAddress,
+         userId,
+      });
 
-      const data = await axios.post('/api/auth/nounce', { walletAddress });
+      setLoginState('Please sign the nonce...');
+      const signature = await signer.signMessage(data.nonce);
 
-      console.log('Data frin <<<<<', data);
+      const { data: verifiedData } = await axios.post('/api/auth/wallet', {
+         walletAddress,
+         signature,
+         nonce: data.nonce,
+      });
 
-      // const signature = await signer.signMessage('Hello World');
+      setLoginState('Login Completed');
 
-      // console.log('signature >>', signature);
+      console.log('verifiedData ==>', verifiedData);
    };
 
    return (

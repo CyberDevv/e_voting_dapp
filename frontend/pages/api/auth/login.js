@@ -1,12 +1,6 @@
 import User from '@/models/user';
 import dbConnect from '@/utils/dbConnect';
-import axios from 'axios';
-import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
-import jwt from 'jsonwebtoken';
-import process from 'process';
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 export default async function handler(req, res) {
    const { email, password } = req.body;
@@ -37,17 +31,7 @@ export default async function handler(req, res) {
       }
 
       res.status(StatusCodes.CREATED).json({
-         token: jwt.sign(
-            {
-               email: user.email,
-               name: user.name,
-               _id: user.id,
-            },
-            JWT_SECRET,
-            {
-               expiresIn: '30d',
-            }
-         ),
+         userId: user.id,
       });
    } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error });

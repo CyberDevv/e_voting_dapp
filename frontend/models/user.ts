@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: [true, 'Email is required'],
       validate: {
-         validator: (val: string) => /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(val),
+         validator: (val: string) =>
+            /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(val),
          message: 'Please enter a valid email',
       },
    },
@@ -27,7 +28,9 @@ const userSchema = new mongoose.Schema({
    },
    walletAddress: {
       type: String,
+      unique: true,
    },
+   nonce: { type: String },
    createdOn: {
       type: Date,
       default: Date.now,

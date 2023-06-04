@@ -4,8 +4,12 @@ import Election from '../models/election.model';
 import asyncHandler from 'express-async-handler';
 import logger from '../utils/winston';
 import { StatusCodes } from 'http-status-codes';
+require('dotenv').config();
 
-const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
+const provider = new ethers.providers.JsonRpcProvider(
+   process.env.SEPOLIA_RPC_URL
+);
+// 'http://localhost:8545'
 
 const getContract = async (name) => {
    //  get contract address and abi from MongoDB

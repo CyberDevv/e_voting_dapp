@@ -24,6 +24,9 @@ const Login = () => {
       axios
          .post('/api/auth/login', { email, password })
          .then((res) => {
+            // set userId to storage
+            localStorage.setItem('userId', res?.data?.userId);
+
             Router.push('/');
 
             setEmail('');

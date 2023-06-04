@@ -5,7 +5,8 @@
    "license": "MIT",
    "scripts": {
       "dev": "nodemon ./server.js --exec babel-node -e js",
-      "deploy:local": "npx hardhat run scripts/deploy.js --network development"
+      "deploy:local": "npx hardhat run scripts/deploy.js --network development",
+      "deploy:sopolia": "npx hardhat run --network sepolia scripts/deploy.js"
    },
    "devDependencies": {
       "@ethersproject/abi": "^5.4.7",
