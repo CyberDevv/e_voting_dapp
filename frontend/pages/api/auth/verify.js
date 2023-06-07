@@ -31,6 +31,7 @@ const handler = async (req, res) => {
       const token = jwt.sign(
          {
             id: user.id,
+            nonce: user.nonce,
          },
          process.env.JWT_SECRET,
          {

@@ -1,17 +1,25 @@
 import Layout from '@/components/layout';
+import { LoadingButton } from '@mui/lab';
 import { Button, Dialog } from '@mui/material';
+import axios from 'axios';
 import React from 'react';
+import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+import { web3Init } from '../../utils/Web3Init';
 import { Input } from '../profile';
 
 const Create = () => {
    const [open, setOpen] = React.useState(false);
-   const [title, setTitle] = React.useState('');
+   const [title, setTitle] = React.useState('Election 1');
    const [startDate, setStartDate] = React.useState('');
    const [endDate, setEndDate] = React.useState('');
-   const [candidateName, setCandidateName] = React.useState('');
-   const [candidateDept, setCandidateDept] = React.useState('');
-   const [quote, setQuote] = React.useState('');
-   const [campaign, setCampaign] = React.useState('');
+   const [candidateName, setCandidateName] = React.useState('Candidate 1');
+   const [candidateDept, setCandidateDept] = React.useState('Computer Science');
+   const [quote, setQuote] = React.useState('Election is the best');
+   const [campaign, setCampaign] = React.useState('I will do my best');
+   const [contractAddress, setContractAddress] = React.useState('');
+   const [abi, setAbi] = React.useState([]);
+   const [isLoading, setIsLoading] = React.useState(false);
 
    const [candidates, setCandidates] = React.useState<any[]>([]);
 
@@ -23,10 +31,10 @@ const Create = () => {
       setCandidates([
          ...candidates,
          {
-            name: candidateName,
-            dept: candidateDept,
+            candidateName,
+            department: candidateDept,
             quote,
-            campaign,
+            campainPromise: campaign,
          },
       ]);
 
@@ -38,8 +46,96 @@ const Create = () => {
       setOpen(false);
    };
 
+   const handleCreateElection = async () => {
+      setIsLoading(true);
+
+      if (!title || !startDate || !endDate || candidates.length === 0) {
+         toast.error('Please fill in all the fields');
+         setIsLoading(false);
+         return;
+      }
+
+      try {
+         const { userAddress, nonce, contract, web3 } = await web3Init(
+            setContractAddress,
+            setAbi,
+            abi,
+            contractAddress
+         );
+
+         // extract candidate names
+         const candidateNames = [];
+         for (let i = 0; i < candidates.length; i++) {
+            candidateNames.push(candidates[i].candidateName);
+         }
+
+         // Convert the start and end dates to timestamps
+         const startDatetamp = Math.floor(new Date(startDate).getTime() / 1000);
+         const endDatetamp = Math.floor(new Date(endDate).getTime() / 1000);
+
+         const electionId = uuidv4();
+
+         // Create the transaction object
+         const transaction = {
+            from: userAddress,
+            to: contractAddress,
+            nonce: nonce,
+            // gas: 200000,
+            data: contract.methods
+               ?.createElection(
+                  title,
+                  startDatetamp,
+                  endDatetamp,
+                  candidateNames,
+                  electionId
+               )
+               .encodeABI(),
+         };
+
+         // Sign the transaction using Metamask
+         await web3.eth
+            .sendTransaction(transaction)
+            .then(async (res) => {
+               await axios
+                  .post('/api/election/create', {
+                     electionId,
+                     title,
+                     startTime: startDate,
+                     endTime: endDate,
+                     candidates,
+                  })
+                  .then((res) => {
+                     setIsLoading(false);
+                     toast.success('Election created successfully');
+
+                     setTitle('');
+                     setStartDate('');
+                     setEndDate('');
+                     setCandidates([]);
+                  })
+                  .catch((err) => {
+                     console.log(err);
+                     setIsLoading(false);
+                     toast.error(err?.response?.data?.error?.message);
+                  });
+            })
+            .catch((err) => {
+               console.log(err);
+               setIsLoading(false);
+               toast.error('Something went wrong');
+            });
+      } catch (error: any) {
+         if (error) {
+            toast.error(error?.response?.data?.error);
+
+            setIsLoading(false);
+            console.log(error);
+         }
+      }
+   };
+
    return (
-      <Layout title='Create Election'>
+      <Layout title='Create Election' requireMetaMask>
          <section className='pt-10'>
             <h4 className='text-3xl font-bold tracking-wide text-gray-200'>
                Create New Election
@@ -100,10 +196,10 @@ const Create = () => {
                                     <div className='w-24 h-24 bg-gray-600 rounded-full min-w-fit' />
                                     <div>
                                        <h5 className='mt-2 text-lg font-bold text-center text-gray-200'>
-                                          {candidate.name}
+                                          {candidate.candidateName}
                                        </h5>
                                        <p className='mt-1 text-center text-gray-200'>
-                                          {candidate.dept}
+                                          {candidate.department}
                                        </p>
                                     </div>
                                     <Button
@@ -121,12 +217,13 @@ const Create = () => {
                </div>
 
                <div className='w-full !mt-20 center'>
-                  <Button
-                     onClick={() => setOpen(true)}
+                  <LoadingButton
+                     loading={isLoading}
+                     onClick={handleCreateElection}
                      className='px-8 py-2 font-semibold text-gray-100 normal-case rounded-md bg-primary'
                   >
                      Save
-                  </Button>
+                  </LoadingButton>
                </div>
             </form>
 

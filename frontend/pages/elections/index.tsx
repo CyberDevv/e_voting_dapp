@@ -1,4 +1,7 @@
 import Layout from '@/components/layout';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Button } from '@mui/material';
 import {
    DataGrid,
@@ -6,9 +9,6 @@ import {
    GridColDef,
    GridRowsProp,
 } from '@mui/x-data-grid';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import DeleteIcon from '@mui/icons-material/Delete';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -46,9 +46,7 @@ const ElectionOverview = () => {
                key={params.id}
                icon={<RemoveRedEyeIcon />}
                label='view'
-               onClick={() =>
-                  router.push(`/elections/${params.id}`)
-               }
+               onClick={() => router.push(`/elections/${params.id}`)}
             />,
             <GridActionsCellItem
                key={params.id}
@@ -61,7 +59,7 @@ const ElectionOverview = () => {
    ];
 
    return (
-      <Layout title='Election Overview'>
+      <Layout title='Election Overview' requireMetaMask>
          <section className='pt-10'>
             <div className='between'>
                <h4 className='text-lg font-bold tracking-wide'>

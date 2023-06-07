@@ -18,6 +18,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/dbConnect.js", "pages/api/auth/login.js", "pages/api/auth/wallet.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/dbConnect.js", "pages/api/auth/login.js", "pages/api/auth/verify.js"],
   "exclude": ["node_modules"]
 }
