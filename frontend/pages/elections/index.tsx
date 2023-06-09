@@ -1,65 +1,130 @@
 import Layout from '@/components/layout';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
+import Election from '@/models/Election';
+import dbConnect from '@/utils/dbConnect';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Button } from '@mui/material';
-import {
-   DataGrid,
-   GridActionsCellItem,
-   GridColDef,
-   GridRowsProp,
-} from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
+import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-const ElectionOverview = () => {
+type Repo = {
+   name: string;
+   stargazers_count: number;
+};
+
+// getServerSideProps
+export const getServerSideProps = async () => {
+   await dbConnect();
+
+   const res = await Election.find({});
+
+   const elections = JSON.parse(JSON.stringify(res));
+
+   return {
+      props: {
+         elections: elections || [],
+      },
+   };
+};
+
+const ElectionOverview = ({ elections }: any) => {
    const router = useRouter();
+
+   const rows = elections.map((election: any) => ({
+      id: election?._id,
+      name: election?.title,
+      startDate: election?.startTime,
+      endDate: election?.endTime,
+      status: { endDate: election?.endTime, startDate: election?.startTime },
+      candidates: election?.electionCandidates.items.length,
+      actions: '',
+   }));
 
    // datagrid columns
    const columns: GridColDef[] = [
       {
          field: 'name',
          headerName: 'Election Tile',
-         minWidth: 150,
+         minWidth: 120,
          flex: 1,
          headerClassName: '',
       },
-      { field: 'startDate', headerName: 'Start Date', minWidth: 150 },
-      { field: 'endDate', headerName: 'End Date', minWidth: 150 },
-      { field: 'status', headerName: 'Status', minWidth: 150 },
-      { field: 'candidates', headerName: 'Candidates', minWidth: 150 },
+      {
+         field: 'startDate',
+         headerName: 'Start Time',
+         minWidth: 180,
+         renderCell: (params) => {
+            return <span>{moment(params.value).format('LLL')}</span>;
+         },
+      },
+      {
+         field: 'endDate',
+         headerName: 'End Time',
+         minWidth: 180,
+         renderCell: (params) => {
+            return <span>{moment(params.value).format('LLL')}</span>;
+         },
+      },
+      {
+         field: 'status',
+         headerName: 'Status',
+         minWidth: 150,
+         renderCell: (params) => {
+            return (
+               <span>
+                  {moment().isBetween(
+                     moment(params.value.endDate),
+                     moment(params.value.startDate)
+                  )
+                     ? 'Open'
+                     : moment().isAfter(moment(params.value.endDate))
+                     ? 'Closed'
+                     : 'Not Started'}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'candidates',
+         headerName: 'Candidates',
+         minWidth: 120,
+         renderCell: (params) => (
+            <span>{params?.value?.toLocaleString('en-US')}</span>
+         ),
+      },
       {
          field: 'actions',
          headerName: '',
          minWidth: 150,
          type: 'actions',
          getActions: (params) => [
-            <GridActionsCellItem
-               key={params.id}
-               icon={<BorderColorIcon />}
-               label='view'
-               onClick={() =>
-                  router.push(`/elections/create?id=${params.id}&edit=true`)
-               }
-            />,
+            // <GridActionsCellItem
+            //    key={params.id}
+            //    icon={<BorderColorIcon />}
+            //    label='view'
+            //    onClick={() =>
+            //       router.push(`/elections/create?id=${params.id}&edit=true`)
+            //    }
+            // />,
             <GridActionsCellItem
                key={params.id}
                icon={<RemoveRedEyeIcon />}
                label='view'
                onClick={() => router.push(`/elections/${params.id}`)}
             />,
-            <GridActionsCellItem
-               key={params.id}
-               icon={<DeleteIcon />}
-               label='view'
-               onClick={() => console.log(params.id)}
-            />,
+            // <GridActionsCellItem
+            //    key={params.id}
+            //    icon={<DeleteIcon />}
+            //    label='view'
+            //    onClick={() => console.log(params.id)}
+            // />,
          ],
       },
    ];
 
    return (
-      <Layout title='Election Overview' requireMetaMask>
+      <Layout title='Election Overview'>
          <section className='pt-10'>
             <div className='between'>
                <h4 className='text-lg font-bold tracking-wide'>
@@ -101,51 +166,3 @@ const ElectionOverview = () => {
 };
 
 export default ElectionOverview;
-
-const rows: GridRowsProp = [
-   {
-      id: 1,
-      name: 'Election 1',
-      startDate: '2021-01-01',
-      endDate: '2021-01-01',
-      status: 'open',
-      candidates: 6,
-      actions: '',
-   },
-   {
-      id: 2,
-      name: 'Election 1',
-      startDate: '2021-01-01',
-      endDate: '2021-01-01',
-      status: 'open',
-      candidates: 6,
-      actions: '',
-   },
-   {
-      id: 3,
-      name: 'Election 1',
-      startDate: '2021-01-01',
-      endDate: '2021-01-01',
-      status: 'open',
-      candidates: 6,
-      actions: '',
-   },
-   {
-      id: 4,
-      name: 'Election 1',
-      startDate: '2021-01-01',
-      endDate: '2021-01-01',
-      status: 'open',
-      candidates: 6,
-      actions: '',
-   },
-   {
-      id: 5,
-      name: 'Election 1',
-      startDate: '2021-01-01',
-      endDate: '2021-01-01',
-      status: 'open',
-      candidates: 6,
-      actions: '',
-   },
-];
